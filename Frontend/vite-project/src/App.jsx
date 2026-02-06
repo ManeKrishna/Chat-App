@@ -11,24 +11,13 @@ function App() {
 
   return (
     <Routes>
-      {/* ROOT */}
-      <Route
-        path="/"
-        element={user ? <Navigate to="/chat" /> : <Navigate to="/login" />}
-      />
-
-      {/* AUTH */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
-
-      {/* PROTECTED */}
       <Route
         path="/chat"
         element={user ? <Chat /> : <Navigate to="/login" />}
       />
-
-      {/* FALLBACK */}
-      <Route path="*" element={<Navigate to="/" />} />
+      <Route path="*" element={<Navigate to="/login" />} />
     </Routes>
   );
 }

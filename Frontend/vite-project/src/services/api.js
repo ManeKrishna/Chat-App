@@ -4,22 +4,12 @@ const api = axios.create({
   baseURL: "http://localhost:5001/api",
 });
 
-api.interceptors.request.use(
-  (config) => {
-    const storedUser = localStorage.getItem("user");
-
-    if (storedUser) {
-      const { token } = JSON.parse(storedUser);
-
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-    }
-
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+api.interceptors.request.use((req) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    req.headers.Authorization = `Bearer ${token}`;
+  }
+  return req;
+});
 
 export default api;
-

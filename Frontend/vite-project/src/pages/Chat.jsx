@@ -1,24 +1,14 @@
-import { useState } from "react";
-import Sidebar from "../components/Sidebar";
-import ChatWindow from "../components/ChatWindow";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Chat() {
-  const [selectedUser, setSelectedUser] = useState(null);
+  const { user, logout } = useContext(AuthContext);
 
   return (
-    <div style={styles.container}>
-      <Sidebar
-        selectedUser={selectedUser}
-        onSelectUser={setSelectedUser}
-      />
-      <ChatWindow selectedUser={selectedUser} />
+    <div>
+      <h1>Chat Page</h1>
+      <pre>{JSON.stringify(user, null, 2)}</pre>
+      <button onClick={logout}>Logout</button>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    display: "flex",
-    height: "100vh",
-  },
-};

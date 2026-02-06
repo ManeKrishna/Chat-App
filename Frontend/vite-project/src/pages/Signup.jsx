@@ -1,88 +1,38 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
+import { useNavigate } from "react-router-dom";
 
-export default function Signup() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [profilePic, setProfilePic] = useState(null);
-  const [error, setError] = useState("");
-
+const Signup = () => {
+  const [form, setForm] = useState({});
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
-    if (!profilePic) {
-      setError("Profile picture is required");
-      return;
-    }
+  const handleFile = (e) => {
+    setForm({ ...form, profilePic: e.target.files[0] });
+  };
 
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("email", email);
-    formData.append("password", password);
-    formData.append("profilePic", profilePic);
+  const handleSubmit = async () => {
+    const data = new FormData();
+    Object.keys(form).forEach((key) => {
+      data.append(key, form[key]);
+    });
 
-    try {
-      await api.post("/auth/signup", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      navigate("/login");
-    } catch (err) {
-      setError(err.response?.data?.message || "Signup failed");
-    }
+    await api.post("/auth/signup", data);
+    navigate("/login");
   };
 
   return (
-    <div>
-      <h2>Signup</h2>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setProfilePic(e.target.files[0])}
-          required
-        />
-
-        <button type="submit">Signup</button>
-      </form>
-
-      <p>
-        Already have an account? <Link to="/login">Login</Link>
-      </p>
-    </div>
+    <>
+      <input name="name" onChange={handleChange} placeholder="Name" />
+      <input name="email" onChange={handleChange} placeholder="Email" />
+      <input name="password" type="password" onChange={handleChange} />
+      <input type="file" onChange={handleFile} />
+      <button onClick={handleSubmit}>Signup</button>
+    </>
   );
-}
+};
+
+export default Signup;

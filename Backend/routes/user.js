@@ -1,14 +1,12 @@
-import express from "express";
-import User from "../models/User.js";
-import auth from "../middleware/auth.js";
+const express = require("express");
+const User = require("../models/User");
+const auth = require("../middleware/auth");
 
 const router = express.Router();
 
 router.get("/", auth, async (req, res) => {
-  const users = await User.find({ _id: { $ne: req.user.id } })
-    .select("-password");
-
+  const users = await User.find({ _id: { $ne: req.user.id } });
   res.json(users);
 });
 
-export default router;
+module.exports = router;

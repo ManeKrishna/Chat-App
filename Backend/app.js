@@ -1,17 +1,23 @@
-import express from "express";
-import cors from "cors";
-import authRoutes from "./routes/auth.js";
-import userRoutes from "./routes/user.js";
-import chatRoutes from "./routes/chat.js";
+const express = require("express");
+const cors = require("cors");
+const path = require("path");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use("/uploads", express.static("uploads"));
 
-app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/chat", chatRoutes);
+// serve uploaded images
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
-export default app;
+// routes
+app.use("/api/auth", require("./routes/auth"));
+app.use("/api/users", require("./routes/user"));
+app.use("/api/chats", require("./routes/chat"));
+
+app.get("/", (req, res) => {
+    res.send("Backend is running");
+  });
+  
+
+module.exports = app;
